@@ -46,23 +46,36 @@ st.set_page_config(
 @st.cache_resource(show_spinner="Downloading Kidney Disease Classification Model from Google Drive. Please wait...")
 def download_model_if_missing():
     from pathlib import Path
+    import shutil
+
+    os.makedirs("model", exist_ok=True)
+
+    downloaded_onnx = Path("model/model.onnx")
+    local_onnx = Path("artifacts/training/model.onnx")
+    if not downloaded_onnx.exists() and local_onnx.exists():
+        shutil.copy(local_onnx, downloaded_onnx)
+
+    downloaded_h5 = Path("model/model.h5")
+    local_h5 = Path("artifacts/training/model.h5")
+    if not downloaded_h5.exists() and local_h5.exists():
+        shutil.copy(local_h5, downloaded_h5)
+
     try:
         import gdown
     except ImportError:
         st.error("Please install gdown (`pip install gdown`) to download the model automatically.")
         return
     
-    # IMPORTANT: Ensure you have separate Google Drive IDs for the ONNX and H5 models.
-    # Using the same ID will result in one of them being saved in the wrong format.
-    onnx_file_id = "YOUR_ONNX_FILE_ID_HERE"
-    h5_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75" # Assuming this is the H5 model
+    # Using the provided Drive link for all predictions and visualizations
+    onnx_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75"
+    h5_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75"
 
     
     # Check if file exists but is just a tiny Git LFS pointer or HTML error page (< 1MB)
     if downloaded_onnx.exists() and os.path.getsize(downloaded_onnx) < 1000:
         pass # Do not automatically remove, rely on user to provide correct model
 
-    if not downloaded_onnx.exists() and onnx_file_id != "YOUR_ONNX_FILE_ID_HERE":
+    if not downloaded_onnx.exists():
         try:
             gdown.download(id=onnx_file_id, output=str(downloaded_onnx), quiet=False, fuzzy=True)
         except TypeError:

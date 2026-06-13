@@ -114,7 +114,11 @@ class PredictionPipeline:
                 print("Warning: onnxruntime not installed. Falling back to TensorFlow.")
                 return None
             # Providers: Use CPUExecutionProvider (or add CUDAExecutionProvider if GPU is available)
-            PredictionPipeline._cached_onnx_model = ort.InferenceSession(str(onnx_path), providers=['CPUExecutionProvider'])
+            try:
+                PredictionPipeline._cached_onnx_model = ort.InferenceSession(str(onnx_path), providers=['CPUExecutionProvider'])
+            except Exception as e:
+                print(f"Warning: Failed to load ONNX model ({e}). Falling back to Keras model.")
+                return None
         
         return PredictionPipeline._cached_onnx_model
 
