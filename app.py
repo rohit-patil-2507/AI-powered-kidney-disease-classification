@@ -57,27 +57,23 @@ def download_model_if_missing():
     onnx_file_id = "YOUR_ONNX_FILE_ID_HERE"
     h5_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75" # Assuming this is the H5 model
 
-    downloaded_onnx = Path("model/model.onnx")
     
     # Check if file exists but is just a tiny Git LFS pointer or HTML error page (< 1MB)
-    if downloaded_onnx.exists() and os.path.getsize(downloaded_onnx) < 1000000:
-        os.remove(downloaded_onnx)
+    if downloaded_onnx.exists() and os.path.getsize(downloaded_onnx) < 1000:
+        pass # Do not automatically remove, rely on user to provide correct model
 
     if not downloaded_onnx.exists() and onnx_file_id != "YOUR_ONNX_FILE_ID_HERE":
-        os.makedirs("model", exist_ok=True)
         try:
             gdown.download(id=onnx_file_id, output=str(downloaded_onnx), quiet=False, fuzzy=True)
         except TypeError:
             gdown.download(id=onnx_file_id, output=str(downloaded_onnx), quiet=False)
 
     # Ensure the original Keras model is also downloaded for XAI visualizations (Grad-CAM/Attention)
-    downloaded_h5 = Path("model/model.h5")
     
-    if downloaded_h5.exists() and os.path.getsize(downloaded_h5) < 1000000:
-        os.remove(downloaded_h5)
+    if downloaded_h5.exists() and os.path.getsize(downloaded_h5) < 1000:
+        pass # Do not automatically remove, rely on user to provide correct model
 
     if not downloaded_h5.exists():
-        os.makedirs("model", exist_ok=True)
         try:
             gdown.download(id=h5_file_id, output=str(downloaded_h5), quiet=False, fuzzy=True)
         except TypeError:

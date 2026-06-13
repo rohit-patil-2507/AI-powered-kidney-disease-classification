@@ -44,28 +44,16 @@ class PredictionPipeline:
     @staticmethod
     def _resolve_model_path(model_path: str) -> Path:
         target_onnx = Path("model/model.onnx")
-        if target_onnx.exists() and os.path.getsize(target_onnx) > 1000000:
+        if target_onnx.exists():
             return target_onnx
 
-        try:
-            import gdown
+        local_onnx = Path("artifacts/training/model.onnx")
+        if local_onnx.exists():
+            import shutil
             os.makedirs("model", exist_ok=True)
-            print(f"Model not found locally. Downloading from Google Drive to {target_onnx}...")
-            file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75" # Verify this is the correct ONNX Drive ID
-            try:
-                gdown.download(id=file_id, output=str(target_onnx), quiet=False, fuzzy=True)
-            except TypeError:
-                gdown.download(id=file_id, output=str(target_onnx), quiet=False)
-            
-            if target_onnx.exists() and os.path.getsize(target_onnx) > 1000000:
-                return target_onnx
-            elif target_onnx.exists():
-                os.remove(target_onnx)
-                print("Downloaded file was too small (likely an error page or LFS pointer) and was removed.")
-        except ImportError:
-            print("gdown is not installed. Skipping automatic model download.")
-        except Exception as e:
-            print(f"gdown encountered an error during download: {e}. Skipping automatic model download.")
+            shutil.copy(local_onnx, target_onnx)
+            print(f"Copied local ONNX model from {local_onnx} to {target_onnx}")
+            return target_onnx
 
         return target_onnx
 
@@ -88,45 +76,30 @@ class PredictionPipeline:
     def load_model(self):
         keras_model_path = self.model_path.with_suffix(".h5")
         if not keras_model_path.exists():
-            if self.model_path.suffix == ".h5" and self.model_path.exists():
+            local_h5 = Path("artifacts/training/model.h5")
+            if local_h5.exists():
+                import shutil
+                os.makedirs("model", exist_ok=True)
+                shutil.copy(local_h5, keras_model_path)
+                print(f"Copied local Keras model from {local_h5} to {keras_model_path}")
+            elif self.model_path.suffix == ".h5" and self.model_path.exists():
                 keras_model_path = self.model_path
-            else:
-                try:
-                    import gdown
-                    keras_model_path.parent.mkdir(parents=True, exist_ok=True)
-                    print(f"Keras model not found locally. Downloading from Google Drive to {keras_model_path}...")
-                    file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75"
-                    try:
-                        gdown.download(id=file_id, output=str(keras_model_path), quiet=False, fuzzy=True)
-                    except TypeError:
-                        gdown.download(id=file_id, output=str(keras_model_path), quiet=False)
-                    
-                    if keras_model_path.exists() and os.path.getsize(keras_model_path) < 1000000:
-                        os.remove(keras_model_path)
-                except ImportError:
-                    print("gdown is not installed. Skipping automatic Keras model download.")
-                except Exception as e:
-                    print(f"gdown encountered an error during Keras model download: {e}.")
 
-                if not keras_model_path.exists():
-                    raise FileNotFoundError(
-                        f"Keras model file not found at {keras_model_path}. Required for XAI visualizations (Grad-CAM/Attention)."
-                    )
+        if not keras_model_path.exists():
+            raise FileNotFoundError(
+                f"Keras model file not found at {keras_model_path}. Required for XAI visualizations (Grad-CAM/Attention)."
+            )
 
         if PredictionPipeline._cached_main_model is None:
             _, load_model = self._load_tensorflow()
             try:
                 PredictionPipeline._cached_main_model = load_model(str(keras_model_path), compile=False)
             except Exception as e:
-                error_msg = str(e).lower()
-                if "signature not found" in error_msg or "synchronously open" in error_msg:
-                    if keras_model_path.exists():
-                        os.remove(keras_model_path)
-                    raise RuntimeError(
-                        f"The model file '{keras_model_path}' was corrupted or a Git LFS pointer. It has been automatically deleted.\n\n"
-                        "Please restart the Streamlit app to trigger a fresh download, or run 'git lfs pull' in your terminal."
-                    ) from e
-                raise e
+                raise RuntimeError(
+                    f"Failed to load the Keras model from '{keras_model_path}'. "
+                    f"Ensure the file is a valid .h5 Keras model, not an ONNX file or a Git LFS pointer.\n\n"
+                    f"Original Keras Error: {e}"
+                ) from e
 
         self._model = PredictionPipeline._cached_main_model
         return self._model
