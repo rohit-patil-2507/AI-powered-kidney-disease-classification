@@ -69,6 +69,7 @@ def download_model_if_missing():
     # Using the provided Drive link for all predictions and visualizations
     onnx_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75"
     h5_file_id = "1qHpMvmT68BCBpZB_DetH88Ob6KNI42Es"
+    h5_file_id = "1lR8ZnfcNNVYqUczNQDVschTouSdhCg1R"
 
     
     # Check if file exists but is just a tiny Git LFS pointer or HTML error page (< 1MB)
@@ -1494,7 +1495,7 @@ with tab1:
             # Decode XAI images from data URLs back to bytes for downloading
             gradcam_bytes = base64.b64decode(st.session_state.persisted_heatmap.split(',')[1]) if st.session_state.persisted_heatmap else b""
 
-            xai_tab1, xai_tab2, xai_tab3 = st.tabs(["🔥 Grad-CAM", "🟢 Attention Map", "🍋 LIME"])
+            xai_tab1, xai_tab2 = st.tabs(["🔥 Grad-CAM", "🟢 Attention Map"])
             
             with xai_tab1:
                 x_col1, x_col2 = st.columns([1, 1])
@@ -1570,48 +1571,48 @@ with tab1:
                     else:
                         st.success("🔬 **Analysis Note:** The attention pixels evenly cover the renal cortex, confirming normal structural integrity without focal anomalies.")
 
-            with xai_tab3:
-                x_col1, x_col2 = st.columns([1, 1])
-                with x_col1:
-                    @st.fragment
-                    def render_lime_tab():
-                        gen_container = st.empty()
-                        if st.session_state.persisted_lime is None:
-                            with gen_container.container():
-                                st.info("Click below to generate the LIME Analysis.")
-                                if st.button("🍋 Generate LIME Analysis", key="btn_gen_lime", use_container_width=True):
-                                    with st.spinner("⏳ Generating LIME Analysis..."):
-                                        try:
-                                            res = get_cached_lime(st.session_state.persisted_file_bytes, st.session_state.persisted_file_ext)
-                                            st.session_state.persisted_lime = res
-                                        except Exception as e:
-                                            st.error(f"Error generating LIME Analysis: {e}")
+            # with xai_tab3:
+            #     x_col1, x_col2 = st.columns([1, 1])
+            #     with x_col1:
+            #         @st.fragment
+            #         def render_lime_tab():
+            #             gen_container = st.empty()
+            #             if st.session_state.persisted_lime is None:
+            #                 with gen_container.container():
+            #                     st.info("Click below to generate the LIME Analysis.")
+            #                     if st.button("🍋 Generate LIME Analysis", key="btn_gen_lime", use_container_width=True):
+            #                         with st.spinner("⏳ Generating LIME Analysis..."):
+            #                             try:
+            #                                 res = get_cached_lime(st.session_state.persisted_file_bytes, st.session_state.persisted_file_ext)
+            #                                 st.session_state.persisted_lime = res
+            #                             except Exception as e:
+            #                                 st.error(f"Error generating LIME Analysis: {e}")
                                             
-                        if st.session_state.persisted_lime:
-                            gen_container.empty()
-                            lime_bytes = base64.b64decode(st.session_state.persisted_lime.split(',')[1])
-                            st.image(st.session_state.persisted_lime, use_container_width=True)
-                            st.download_button(
-                                label="📥 Download LIME",
-                                data=lime_bytes,
-                                file_name="lime_overlay.png",
-                                mime="image/png",
-                                use_container_width=True
-                            )
-                    render_lime_tab()
-                with x_col2:
-                    st.markdown(f"<h4 style='color: {title_color};'>LIME (Local Interpretable Model-agnostic Explanations)</h4>", unsafe_allow_html=True)
-                    st.markdown(f"<p style='color: {text_color};'>Explains the prediction by perturbing the input image (breaking it into superpixels) and observing how the predictions change, identifying the exact superpixels that contributed to the class.</p>", unsafe_allow_html=True)
-                    if st.session_state.persisted_label == 'Tumor':
-                        st.info("🔬 **Analysis Note:** Positive superpixels correspond to irregular margins along the renal pelvis and cortex contour.")
-                    elif st.session_state.persisted_label == 'Stone':
-                        st.info("🔬 **Analysis Note:** Positive superpixels correspond to the calcified mass within the renal collecting system.")
-                    elif st.session_state.persisted_label == 'Cyst':
-                        st.info("🔬 **Analysis Note:** Positive superpixels define the smooth boundaries of the cortical cystic lesion.")
-                    elif st.session_state.persisted_label == 'Uncertain':
-                        st.warning("🔬 **Analysis Note:** Superpixels are scattered with low overall importance, reflecting the model's inability to confidently classify the image.")
-                    else:
-                        st.success("🔬 **Analysis Note:** The superpixels evenly cover the renal cortex, confirming normal structural integrity.")
+            #             if st.session_state.persisted_lime:
+            #                 gen_container.empty()
+            #                 lime_bytes = base64.b64decode(st.session_state.persisted_lime.split(',')[1])
+            #                 st.image(st.session_state.persisted_lime, use_container_width=True)
+            #                 st.download_button(
+            #                     label="📥 Download LIME",
+            #                     data=lime_bytes,
+            #                     file_name="lime_overlay.png",
+            #                     mime="image/png",
+            #                     use_container_width=True
+            #                 )
+            #         render_lime_tab()
+            #     with x_col2:
+            #         st.markdown(f"<h4 style='color: {title_color};'>LIME (Local Interpretable Model-agnostic Explanations)</h4>", unsafe_allow_html=True)
+            #         st.markdown(f"<p style='color: {text_color};'>Explains the prediction by perturbing the input image (breaking it into superpixels) and observing how the predictions change, identifying the exact superpixels that contributed to the class.</p>", unsafe_allow_html=True)
+            #         if st.session_state.persisted_label == 'Tumor':
+            #             st.info("🔬 **Analysis Note:** Positive superpixels correspond to irregular margins along the renal pelvis and cortex contour.")
+            #         elif st.session_state.persisted_label == 'Stone':
+            #             st.info("🔬 **Analysis Note:** Positive superpixels correspond to the calcified mass within the renal collecting system.")
+            #         elif st.session_state.persisted_label == 'Cyst':
+            #             st.info("🔬 **Analysis Note:** Positive superpixels define the smooth boundaries of the cortical cystic lesion.")
+            #         elif st.session_state.persisted_label == 'Uncertain':
+            #             st.warning("🔬 **Analysis Note:** Superpixels are scattered with low overall importance, reflecting the model's inability to confidently classify the image.")
+            #         else:
+            #             st.success("🔬 **Analysis Note:** The superpixels evenly cover the renal cortex, confirming normal structural integrity.")
                 
             st.markdown("<br>", unsafe_allow_html=True)
     else:
