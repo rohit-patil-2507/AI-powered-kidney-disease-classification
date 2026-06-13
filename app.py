@@ -2041,6 +2041,16 @@ with tab3:
 Current Case Context:
 - Diagnostic Prediction: {st.session_state.latest_label}
 - Model Confidence: {st.session_state.latest_confidence:.2f}%
+
+# APP CAPABILITIES & CONTEXT
+You are integrated into the "Renal Vision" application. Be aware of its capabilities so you can reference them if users ask:
+*   **Explainable AI (XAI):** 
+    *   **Grad-CAM:** Uses gradients of the target concept flowing into the final convolutional layer to produce a localization map highlighting important regions.
+    *   **Attention Map:** Explains the prediction by mapping the gradients of the output to the input image, highlighting the exact pixels the model focused on.
+    *   **LIME:** Explains the prediction by perturbing the input image (breaking it into superpixels) and observing how the predictions change.
+*   **Batch Processing:** Can process multiple CT scans simultaneously to generate a consolidated diagnostic PDF/CSV report.
+*   **Safety & Validation:** Automatically validates image quality and verifies if the uploaded image is a valid renal CT scan before processing.
+
 # UI/OUTPUT FORMATTING (IMPORTANT)
 - Use clean, professional markdown with consistent font sizing.
 - Prefer: short headings (###), concise bullets (-), and short paragraphs.
