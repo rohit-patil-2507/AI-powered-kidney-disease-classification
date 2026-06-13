@@ -18,3 +18,5 @@ scipy
 dvc
 lime
 scikit-image
+onnxruntime
+opencv-python
