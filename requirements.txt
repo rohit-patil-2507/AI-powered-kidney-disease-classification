@@ -19,4 +19,4 @@ dvc
 lime
 scikit-image
 onnxruntime
-opencv-python
+opencv-python-headless
