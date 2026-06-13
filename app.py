@@ -1120,6 +1120,7 @@ def get_cached_lime(file_bytes, file_extension):
 # --- Define the Main Streamlit Application Layout: Setup the sidebar, main title, and layout containers ---
 st.sidebar.markdown(f"""
     <h2 style='color: #38BDF8 !important; font-weight: 800; text-align: left !important; font-size: 1.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid {sidebar_border}; margin-bottom: 1.5rem;'>
+    <h2 style='color: #007BFF !important; font-weight: 800; text-align: left !important; font-size: 1.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid {sidebar_border}; margin-bottom: 1.5rem;'>
     🏥 Control Center
     </h2>
 """, unsafe_allow_html=True)
