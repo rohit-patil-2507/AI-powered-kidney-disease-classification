@@ -68,7 +68,7 @@ def download_model_if_missing():
     
     # Using the provided Drive link for all predictions and visualizations
     onnx_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75"
-    h5_file_id = "1FNW-B0dBBVwOAfrl6M5zGiNhqXVSYo75"
+    h5_file_id = "1qHpMvmT68BCBpZB_DetH88Ob6KNI42Es"
 
     
     # Check if file exists but is just a tiny Git LFS pointer or HTML error page (< 1MB)
