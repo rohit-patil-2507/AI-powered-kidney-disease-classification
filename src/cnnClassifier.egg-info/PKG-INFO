@@ -1,4 +1,19 @@
-# Kidney-Disease-Classification-MLflow-DVC-streamlit.
+Metadata-Version: 2.4
+Name: cnnClassifier
+Version: 0.0.0
+Summary: A small python package for CNN app
+Home-page: https://github.com/rohit-patil-2507/Kidney-Disease-Classification-Deep-Learning-Project
+Author: rohit-patil-2507
+Author-email: wwwwmrrohitpatil142@gmail.com
+Project-URL: Bug Tracker, https://github.com/rohit-patil-2507/Kidney-Disease-Classification-Deep-Learning-Project/issues
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: home-page
+Dynamic: project-url
+Dynamic: summary
+
+# Kidney-Disease-Classification-MLflow-DVC
 
 
 ## Workflows
@@ -18,11 +33,7 @@ This project follows a structured, modular approach to machine learning pipeline
 
 ### 1. Environment & Project Setup
 - **Template Initialization**: Created the initial directory structure automatically using a custom `template.py` script.
-
-
-- **Environment**: Set up a Conda virtual environment. Use `model_requirements.txt` for building and training the model, and `requirements.txt` for frontend app execution.
-use `model_requirements.txt` first to install dependancies for model preparation and training (configure native gpu support to get training done faster.)
-After model training you can setup `streamlit_app.py` for model integration for get prediction inference. 
+- **Environment**: Set up a Conda virtual environment and installed all dependencies from `requirements.txt`.
 
 ### 2. Configuration & Secrets Management
 - **Configuration (`config.yaml`)**: Centralized data, model, and tracking paths.
@@ -40,19 +51,14 @@ After model training you can setup `streamlit_app.py` for model integration for 
 
 ### 4. Orchestration & Experiment Tracking
 - **DVC (Data Version Control)**: Tied all pipeline stages together via `dvc.yaml`. DVC orchestrates the execution (`dvc repro`) and skips stages that haven't changed.
-
 - **MLflow Integration**: Set up DagsHub as the remote tracking URI to log metrics, parameters, and models securely (with `mlflow_utils.py` handling the experiment lifecycle).
 
 ### 5. Application Interfaces
 - **Flask API (`app.py`)**: Built a robust backend to handle prediction requests. Added data validation steps (checking image blurriness, valid grayscale scans, and verifying against a secondary CT verification model).
-
 - **Streamlit Explainability App (`streamlit.py`)**: Developed an advanced, medical-themed UI featuring:
   - Single and Batch image prediction capabilities.
   - **Explainable AI (XAI)**: Grad-CAM overlay heatmaps to visualize the model's focus.
   - **Medical Advisory AI**: Integrated LLaMA-3 via Groq API to provide context-aware nephrology advice based on the model's prediction.
-
-
-
 
 # How to run?
 ### STEPS:
@@ -65,8 +71,7 @@ git clone https://github.com/rohit-patil-2507/Kidney-Disease-Classification-Deep
 ### STEP 01- Create a conda environment after opening the repository
 
 ```bash
-conda create -n cnncls python=3.13 -y
-# Using Python 3.13. Native Windows GPU support for TensorFlow is disabled (executes natively on CPU).
+conda create -n cnncls python=3.12 -y
 ```
 
 ```bash
@@ -75,12 +80,6 @@ conda activate cnncls
 
 
 ### STEP 02- install the requirements
-For building and training the model:
-```bash
-pip install -r model_requirements.txt
-```
-
-For running the frontend app:
 ```bash
 pip install -r requirements.txt
 ```
@@ -112,7 +111,7 @@ Run it locally:
 
 ```bash
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
 
 For public deployment (Streamlit Community Cloud): keep a deployable model at:
@@ -199,3 +198,5 @@ DVC
  - Its very lite weight for POC only
  - lite weight expriements tracker
  - It can perform Orchestration (Creating Pipelines)
+
+

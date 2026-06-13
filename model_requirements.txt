@@ -1,0 +1,17 @@
+numpy
+pandas
+Pillow
+tensorflow
+gdown
+PyYAML
+pydicom
+matplotlib
+mlflow
+python-box
+joblib
+scipy
+dvc
+lime
+scikit-image
+opencv-python
+onnxruntime

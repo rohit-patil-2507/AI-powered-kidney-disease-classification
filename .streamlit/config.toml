@@ -1,0 +1,4 @@
+[server]
+# The maximum size, in megabytes, for file uploads.
+# Default is 200.
+maxUploadSize = 2

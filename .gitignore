@@ -1,0 +1,14 @@
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Optional: Add other general ignores if not present
+__pycache__/
+artifacts/*
+
+
+scores.json
+logs/*
+.vscode/*
+restore_experiment.py
+model/*
+.streamlit/secrets.toml
