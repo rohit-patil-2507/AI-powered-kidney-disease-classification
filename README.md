@@ -91,9 +91,8 @@ python app.py
 ```
 
 Now,
-```bash
+
 open up you local host and port
-```
 
 ## Streamlit Explainability App
 
