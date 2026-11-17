@@ -1860,7 +1860,7 @@ if CHATBOT_API_KEY != "YOUR_API_KEY_HERE":
     CHATBOT_API_KEY = CHATBOT_API_KEY.strip()
     os.environ["GROQ_API_KEY"] = CHATBOT_API_KEY
 
-CHATBOT_MODEL_NAME = os.environ.get("GROQ_MODEL","llama-3.1-8b-instant")
+CHATBOT_MODEL_NAME = os.environ.get("GROQ_MODEL","meta-llama/llama-prompt-guard-2-22m")
 
 # --- Define the Integrated Medical Advisory Chatbot UI and Logic: Setup the tab interface, warning messages, and chat interactions ---
 avatar_grad_start = "#38BDF8"
